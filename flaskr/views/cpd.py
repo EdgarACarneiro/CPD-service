@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, request, current_app, request, abort, json
+    Blueprint, request, current_app, abort, json
 )
 
 from ..utils import (
