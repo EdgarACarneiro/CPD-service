@@ -31,8 +31,12 @@ def extract_angle(rot_mat):
 @cpd.route('/cpd', methods=['POST'])
 def cpd_interface():
     input_data = request.get_json()
-    X = np.array(input_data['X'])
-    Y = np.array(input_data['Y'])
+
+    try:
+        X = np.array(input_data['X'] if 'X' in input_data else input_data['x'])
+        Y = np.array(input_data['Y'] if 'Y' in input_data else input_data['y'])
+    except:
+        abort(404)
 
     reg = rigid_registration(**{'X': X, 'Y': Y, 'tolerance': 0.00001})
     target_Y, (scale, r_rads, t_vec) = reg.register()
