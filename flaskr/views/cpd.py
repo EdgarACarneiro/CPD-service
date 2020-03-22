@@ -28,6 +28,21 @@ def extract_angle(rot_mat):
     return rad_to_degree(np.arccos(cos_angle))
 
 
+def extract_rigid(cpd_res):
+    _, (scale, r_rads, t_vec) = cpd_res
+    return {
+        'translation': t_vec.tolist(),
+        'rotation': extract_angle(r_rads),
+        'scale': scale
+    }
+
+
+def run_CPD(X, Y):
+    '''Run the CPD algorithm an return the identified object'''
+    reg = rigid_registration(**{'X': X, 'Y': Y, 'tolerance': 0.00001})
+    return reg.register()
+
+
 @cpd.route('/cpd', methods=['POST'])
 def cpd_interface():
     input_data = request.get_json()
@@ -38,18 +53,33 @@ def cpd_interface():
     except:
         abort(404)
 
-    reg = rigid_registration(**{'X': X, 'Y': Y, 'tolerance': 0.00001})
-    target_Y, (scale, r_rads, t_vec) = reg.register()
-
     return current_app.response_class(
-        response=json.dumps({
-            'translation': t_vec.tolist(),
-            'rotation': extract_angle(r_rads),
-            'scale': scale
-        }),
+        response=json.dumps(
+            extract_rigid(
+                run_CPD(X, Y))),
         status=200,
         mimetype='application/json'
     )
+
+
+@cpd.route('/cpd-all', methods=['POST'])
+def cpd_all():
+    input_data = request.get_json()
+
+    phenomena = input_data['phenomena']
+    res = []
+
+    for i in range(0, len(phenomena) - 1):
+        res.append(
+            extract_rigid(
+                run_CPD(phenomena[i], phenomena[i + 1])))
+
+    return current_app.response_class(
+        response=json.dumps(res),
+        status=200,
+        mimetype='application/json'
+    )
+
 
 # Customized Error handlers
 @cpd.errorhandler(401)
