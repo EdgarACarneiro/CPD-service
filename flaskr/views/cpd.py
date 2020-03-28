@@ -37,15 +37,8 @@ def extract_rigid(cpd_res):
     }
 
 
-def run_CPD(X, Y):
+def run_CPD(input_data):
     '''Run the CPD algorithm an return the identified object'''
-    reg = rigid_registration(**{'X': X, 'Y': Y, 'tolerance': 0.00001})
-    return reg.register()
-
-
-@cpd.route('/cpd', methods=['POST'])
-def cpd_interface():
-    input_data = request.get_json()
 
     try:
         X = np.array(input_data['X'] if 'X' in input_data else input_data['x'])
@@ -53,10 +46,16 @@ def cpd_interface():
     except:
         abort(404)
 
+    reg = rigid_registration(**{'X': X, 'Y': Y, 'tolerance': 0.00001})
+    return reg.register()
+
+
+@cpd.route('/cpd', methods=['POST'])
+def cpd_interface():
     return current_app.response_class(
         response=json.dumps(
             extract_rigid(
-                run_CPD(X, Y))),
+                run_CPD(request.get_json()))),
         status=200,
         mimetype='application/json'
     )
@@ -64,18 +63,14 @@ def cpd_interface():
 
 @cpd.route('/cpd-all', methods=['POST'])
 def cpd_all():
-    input_data = request.get_json()
-
-    phenomena = input_data['phenomena']
     res = []
-
-    for i in range(0, len(phenomena) - 1):
+    for phenomenon in request.get_json():
         res.append(
             extract_rigid(
-                run_CPD(phenomena[i], phenomena[i + 1])))
+                run_CPD(phenomenon)))
 
     return current_app.response_class(
-        response=json.dumps(res),
+        response=json.dumps({'transformations': res}),
         status=200,
         mimetype='application/json'
     )
