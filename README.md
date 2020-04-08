@@ -19,3 +19,18 @@ The respective response, in json:
     "translation": [10.498756211247015, 10.498756211247013]
 }
 ```
+
+## Running Instructions
+
+* Using Docker:
+```shell
+docker build -t cpd-service . --no-cache
+docker run -p 5000:5000 cpd-service
+```
+
+* Using command line:
+```
+python -m venv venv
+. venv/bin activate
+sh init.sh
+```
