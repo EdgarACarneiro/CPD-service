@@ -46,7 +46,7 @@ def run_CPD(input_data):
     except:
         abort(404)
 
-    reg = rigid_registration(**{'X': X, 'Y': Y, 'tolerance': 0.00001})
+    reg = rigid_registration(**{'X': Y, 'Y': X, 'tolerance': 0.00001})
     return reg.register()
 
 
