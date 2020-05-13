@@ -24,8 +24,10 @@ def extract_angle(rot_mat):
     # Validating the value because algorithm representations
     cos_angle = 1 if cos_angle > 1 else\
         (-1 if cos_angle < -1 else cos_angle)
+    degree = rad_to_degree(np.arccos(cos_angle))
 
-    return rad_to_degree(np.arccos(cos_angle))
+    # Check degree signal
+    return degree if rot_mat[0][1] > 0 else degree * -1
 
 
 def extract_rigid(cpd_res):
@@ -38,7 +40,7 @@ def extract_rigid(cpd_res):
 
 
 def run_CPD(input_data):
-    '''Run the CPD algorithm an return the identified object'''
+    '''Run the CPD algorithm and return the identified object'''
 
     try:
         X = np.array(input_data['X'] if 'X' in input_data else input_data['x'])
