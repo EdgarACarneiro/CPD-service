@@ -1,8 +1,12 @@
 # CPD-service
 
-A microservice to run the Coherent Point Drift (CPD) method.
+A microservice, built with [flask](https://flask.palletsprojects.com/en/1.1.x/),  to run the Coherent Point Drift (CPD) method, a point set registration algorithm, to estimate the spatial transformations affecting spatiotemporal phenomena.
+This microservice is part of the [__SpatioTemporal Features eXtractor (_stfX_)__](https://github.com/EdgarACarneiro/stfX). Section 5.2.1 of the __[thesis](https://github.com/EdgarACarneiro/stfX/blob/master/docs/thesis.pdf)__ associated to the _stfX_ contains a detailed description of this microservice architecture, guidelines and API.
 
-## Example request
+To run the CPD method, we utilise [_pycpd_](https://pypi.org/project/pycpd/).
+
+
+# Usage example
 
 Example of a request to this microservice:
 ```shell
@@ -20,7 +24,7 @@ The respective response, in json:
 }
 ```
 
-## Running Instructions
+# Running Instructions
 
 * Using Docker:
 ```shell
